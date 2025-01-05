@@ -136,12 +136,65 @@ podman mount myapp_image
 
 ## 2.3 Building Images
 
-### 2.3.1 Format of Containerfile or Dockerfile
+### 2.3.1 Format of a Containerfile and Dockerfile
 
-Describe the structure and syntax of a `Containerfile` or `Dockerfile` used for building images.
+#### Containerfile Example
+A `Containerfile` is the Podman equivalent of a `Dockerfile`. Here's an example:
+
+```Dockerfile
+# Containerfile
+FROM ubuntu:20.04
+
+LABEL maintainer="youremail@example.com"
+
+# Update and install necessary packages
+RUN apt-get update && apt-get install -y     python3     python3-pip     && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy application code
+COPY . /app
+
+# Install dependencies
+RUN pip3 install -r requirements.txt
+
+# Expose the application port
+EXPOSE 8080
+
+# Command to run the application
+CMD ["python3", "app.py"]
+```
+
+#### Dockerfile Example
+A `Dockerfile` is used similarly to a `Containerfile` and can be used interchangeably:
+
+```Dockerfile
+# Dockerfile
+FROM nginx:latest
+
+LABEL maintainer="admin@example.com"
+
+# Copy custom configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Set up content directory
+WORKDIR /usr/share/nginx/html
+
+# Copy website content
+COPY . /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+These examples illustrate how to define a base image, add application-specific dependencies, set up working directories, and define commands to execute when the container starts.
 
 ### 2.3.2 Automating the Building for Our Application
 
-Demonstrate building an image using a `Containerfile`:
+Demonstrate building an image using a `Containerfile` or `Dockerfile`:
 ```bash
 podman build -t myapp_image .
